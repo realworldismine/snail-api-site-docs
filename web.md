@@ -42,3 +42,5 @@ Prerendering docs
 - 위에서는 예제 OpenAPi 문서를 사용하였으므로, 이제 실제 API 문서를 만들어야 함(snail.yaml)
 - Repository 생성 후, redoc/snail.yaml 파일을 넣어야 함
 - Repo에서 S3로 실시간 동기화하는 방법을 검토해봐야 함
+  - 실시간 동기화는 AWS CodePipeline을 사용하는 것이 가장 현실적인 방법이 될 것
+  - WebHook으로 변경사항 Trigger한 다음, 실제 발생 시 S3에 업로드하는 절차로 수행

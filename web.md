@@ -53,6 +53,7 @@ Prerendering docs
 ### S3 bucket
 - Purpose: Store a static web page
 - Disable block public access
+![image](https://github.com/user-attachments/assets/1bf6e7fb-5cb2-4d9f-868e-44ab26740c17)
 
 - Others set default
 
@@ -103,6 +104,7 @@ cache:
     - To reduce this inconvenience, caching should be used, and S3 caching will be utilized.
     - However, if S3 permissions are not added, CodeBuild will not be able to access S3, so you must ensure that S3 permissions are added to the IAM role.
   - Usage
+![image](https://github.com/user-attachments/assets/2323f70f-6697-47a4-89e4-16ebc3bea860)
     - You can see `Service role`, and click it.
     - Click Add permissions - Create inline policy.
     - Service: S3
@@ -126,3 +128,6 @@ cache:
   - Input artifacts: BuildArtifact
   - Bucket: your API bucket
   - S3 Object Key: a specific bucket directory(e.g. `www`, `my-docs`)
+
+### Deployment Result
+![image](https://github.com/user-attachments/assets/3382b91e-4e72-48ad-9440-34af20ea6223)

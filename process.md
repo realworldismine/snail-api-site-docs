@@ -1,30 +1,30 @@
-# 구현 프로세스
-## 정적 웹페이지 배포 프로세스
-- Update Static Web Repo
-- CodePipeline에서 WebHook을 사용하여 변경사항 감지
-- OpenAPI Yaml 파일을 redocly CLI를 사용하여 자동으로 HTML 변환
-- 변환된 HTML 파일을 S3 Bucket에 업로드
+# Implementation Process
+## Static Web Page Deployment Process
+- Update Static Web Repository
+- Detect changes using WebHook in CodePipeline
+- CodeBuild, integrated with CodePipeline, automatically converts OpenAPI YAML file to HTML using redocly CLI
+- Upload the converted HTML file to the S3 Bucket
 
-## 이미지 배포 프로세스
-- Update Image Repo
+## Image Deployment Process
+- Update Image Repository
 - Make save request automatically
-- Lambda에 의하여 Raw 데이터 이미지 저장 및 DynamoDB에 메타데이터 저장
-- Lambda에 의하여 저장된 이미지를 해상도 별 Bucket에 추가로 저장 후 DynamoDB에 메타데이터 저장
+- Lambda stores raw image data and saves metadata in DynamoDB
+- Lambda additionally stores the image in different resolution-specific Buckets and updates the metadata in DynamoDB
 
-## 정적 웹페이지 호출 프로세스
+## Static Web Page Request Process
 - Page Request
-- API Gateway 요청 수행
+- Perform API Gateway request
 - Return a static web page
 
-## API 호출 프로세스
+## API Request Process
 ### Info Request API
 - Info Request
-- API Gateway를 통해서 요청 수행
-- DynamoDB를 통한 쿼리 및 결과 Response
+- Perform request through API Gateway
+- Query DynamoDB and return the result as a response
 
 ### Image Request API
 - Image Request
-- CloudFront에 캐싱된 이미지가 있을 경우 바로 전달, 없을 경우 API Gateway 요청 수행
-- API Gateway에서 Client의 장비 및 메타데이터 획득
-- DynamoDB를 통한 쿼리
-- 각 Bucket의 정보에 대한 Image 정보 Reponse
+- If the image is cached in CloudFront, return it immediately; otherwise, perform a request via API Gateway
+- API Gateway retrieves client device information and metadata
+- Query DynamoDB
+- Return image information from each Bucket

@@ -1,9 +1,9 @@
 # Snail API Implementation
 
-## 구축 목표
+## Objective
 - Implement a simple Snail web page and API based on AWS Serverless.
 
-## 구축 기능
+## Major Features
 - Snail API Static HTML Page
   - ReDoc API Reference
   - Random Image Usage (TBD)

@@ -5,16 +5,16 @@
 - CodeBuild, integrated with CodePipeline, automatically converts OpenAPI YAML file to HTML using redocly CLI
 - Upload the converted HTML file to the S3 Bucket
 
+## Static Web Page Request Process
+- Page Request
+- Perform API Gateway request
+- Return a static web page
+
 ## Image Deployment Process
 - Update Image Repository
 - Make save request automatically
 - Lambda stores raw image data and saves metadata in DynamoDB
 - Lambda additionally stores the image in different resolution-specific Buckets and updates the metadata in DynamoDB
-
-## Static Web Page Request Process
-- Page Request
-- Perform API Gateway request
-- Return a static web page
 
 ## API Request Process
 ### Info Request API

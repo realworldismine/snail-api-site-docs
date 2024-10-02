@@ -40,4 +40,5 @@
 ### Sub Pages
 - [Processes](process.md)
 - [Static Web Page Implementation](web.md)
-- [Database Implementation](database.md)
+- [API Gateway Implementation](apigateway.md)
+- [Database Implementation](dataprocessing.md)

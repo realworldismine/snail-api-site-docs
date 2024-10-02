@@ -1,20 +1,20 @@
-# 정적 웹페이지 구현
-## 초기 기획
-- API Reference 페이지 추가: 모든 API 목록을 나타내도록 함
-- 메인 화면 추가: 홈페이지 링크, 랜덤 이미지 조회 등 간단한 기능 추가 고려
+# Static Web Page Implementation
+## Initial Planning
+- Add API Reference Page: Display a list of all APIs.
+- Add Main Page: Consider adding simple features such as a homepage link and random image retrieval.
 
-## 구현 방향
-- 하나라도 제대로 하고 나서 기능 확장을 고려해 봅시다.
-- Serverless 기반 개발 목표
-- 시스템 환경 구축이 우선이므로, 메인화면은 추후 구현토록 함
+## Implementation Direction
+- Let's focus on doing one thing well before considering feature expansion.
+- Development target is based on Serverless.
+- Since system environment setup is a priority, the main page will be implemented later.
 
 ## API Reference
-- 이 것부터 만들도록 한다.
-- 도구 선정: ReDoc으로 결정, 이유는 정적 HTML 파일 구현이 단순해서
+- Start by creating this.
+- Tool Selection: Decided on ReDoc because generating a static HTML file is simple.
 
-## ReDoc 문서 설치 및 생성 예제
+## ReDoc Documentation Installation and Generation Example
 ### Reference
-- 출처: https://redocly.com/docs/cli/installation
+- Source: https://redocly.com/docs/cli/installation
 
 ### Simple Example
 
@@ -23,12 +23,12 @@
 npm i -g @redocly/cli@latest
 ```
 
-#### HTML 문서 생성
-- 생성 구문
+#### HTML Document Generation
+- Generation Command
 ```
 npx @redocly/cli build-docs snail.yaml  
 ```
-- 생성 결과
+- Generation Result
 ```
 Found undefined and using theme.openapi options
 Prerendering docs
@@ -36,18 +36,93 @@ Prerendering docs
 🎉 bundled successfully in: redoc-static.html (156 KiB) [⏱ 3ms].
 ```
  
-#### 미리보기
+#### Preview
 ![image](https://github.com/user-attachments/assets/2c5b5a88-6e3a-4166-be2a-c147baf0d5f7)
 
-### 구현 방향
-- 위 예제는 OpenAPI 문서를 redoc으로 어떻게 파일이 생성되고 구현되는 지를 시연한 예제임
-- 그러나, 실제 구현 시에는 Github Repository에 OpenAPI Yaml 문서를 올리면 자동으로 html로 변환하도록 구현할 예정
-- 자동으로 html 변환 및 등록하는 방법은 크게 2가지가 있음
-  - Github Action을 사용하여 redocly CLI를 사용하여 html 문서 생성 및 Github에 Commit 후, s3 bucket에 html 파일 업로드
-  - AWS CodePipeline을 사용하여 redocly CLI 사용 및 html 문서 생성 후, s3 bucket에 html 파일 업로드
-- 선정 결과
-  - 후자인 AWS CodePipeline을 사용하는 방법으로 결정
-  - AWS CodePipeline을 사용하면 Github Repository를 WebHook을 사용하여, 변경사항을 Trigger한 다음 변환 및 업로드를 한 번에 수행할 수 있음
+### Implement Direction
+- The above example demonstrates how an OpenAPI document is generated and implemented using ReDoc.
+- However, for actual implementation, the plan is to automatically convert the OpenAPI YAML file to HTML when uploaded to the GitHub repository.
+- There are two main ways to automate the HTML conversion and upload:
+  - Use GitHub Action to generate the HTML file with the redocly CLI, commit it to GitHub, and upload the HTML file to an S3 bucket.
+  - Use AWS CodePipeline to generate the HTML file with the redocly CLI and upload it to an S3 bucket.
+- Selected Approach
+  - Decided to use the latter approach with AWS CodePipeline.
+  - Using AWS CodePipeline allows triggering changes with the GitHub repository’s webhook and performing both the conversion and upload in one go.
 
-## AWS CodePipeline을 사용한 배포
-- TBD
+## Deployment Using AWS CodePipeline and CodeBuild
+### S3 bucket
+- Purpose: Store a static web page
+- Disable block public access
+
+- Others set default
+
+### CodeBuild
+- Purpose: To convert the OpenAPI YAML file into a Redoc document and generate a static HTML file as an artifact.
+1. Source
+  - Provider: Github
+  - Crednetial: Default source credential
+  - Repository: Select the API source repository
+2. Primary source webhook events
+  - Check rebuild every time a code change is pushed to this repository
+  - Build type: Single build
+3. Environment
+  - Image: Managed
+4. Buildspec
+  - Use a buildspec file
+  - Please add `buildspec.yml` in the repository below
+```
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g redoc-cli
+  build:
+    commands:
+      - npx @redocly/cli build-docs snail.yaml -o redoc.html
+
+artifacts:
+  files:
+    - redoc.html
+
+cache:
+  paths:
+    - /root/.npm/**/*
+```
+  - It could be changed adding a static page
+
+5. Architects - additional configuration
+  - Cache type: Amazon S3
+  - Cache bucket: a specific bucket for building a code (NOT API bucket)
+  - Prefix: `build-cache`
+
+6. S3 Permission (Important!!)
+  - Why do we need to configure S3 permissions? 
+    - To convert the OpenAPI YAML file into a Redoc document, you need to install npm and redocly-cli.
+    - However, if you don't use caching, these packages will need to be installed every time the code is deployed.
+    - To reduce this inconvenience, caching should be used, and S3 caching will be utilized.
+    - However, if S3 permissions are not added, CodeBuild will not be able to access S3, so you must ensure that S3 permissions are added to the IAM role.
+  - Usage
+    - You can see `Service role`, and click it.
+    - Click Add permissions - Create inline policy.
+    - Service: S3
+    - Check `ListBucket`, `GetBucket`, `PutBucket`.
+    - Check `Any` in `Resources`.
+
+### CodePipeline
+1. Choose pipeline settings
+  - Queued
+  - New service role
+2. Add source stage
+  - Github(Version 2)
+  - Connection: use github account
+  - Repository Name: select the API repository
+  - Default Branch: `main`
+3. Add build stage
+  - AWS CodeBuild
+  - Project Name: your CodeBuild project
+4. Add deploy stage
+  - Amazon S3
+  - Input artifacts: BuildArtifact
+  - Bucket: your API bucket
+  - S3 Object Key: a specific bucket directory(e.g. `www`, `my-docs`)

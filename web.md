@@ -131,4 +131,10 @@ cache:
   - S3 Object Key: a specific bucket directory(e.g. `www`, `my-docs`)
 
 ### Deployment Result
+- Deployment Process
+
 ![image](https://github.com/user-attachments/assets/3382b91e-4e72-48ad-9440-34af20ea6223)
+
+- Deployed Page
+
+![image](https://github.com/user-attachments/assets/cedfdf20-252e-4274-83d8-ac8b9451d1e0)

@@ -52,7 +52,8 @@ Prerendering docs
 ## Deployment Using AWS CodePipeline and CodeBuild
 ### S3 bucket
 - Purpose: Store a static web page
-- Disable block public access
+- Disable block public access(Temporary)
+  - After applying API Gateway, it will change to private access.
 ![image](https://github.com/user-attachments/assets/1bf6e7fb-5cb2-4d9f-868e-44ab26740c17)
 
 - Others set default

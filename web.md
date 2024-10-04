@@ -57,6 +57,7 @@ Prerendering docs
 ![image](https://github.com/user-attachments/assets/1bf6e7fb-5cb2-4d9f-868e-44ab26740c17)
 
 - Others set default
+  - Enabling static website hosting by checking the `Enabled` is one way to host a static website, but since all access will be through API Gateway in the future, leaving this setting at the default `Disabled` state will not cause any issues.
 
 ### CodeBuild
 - Purpose: To convert the OpenAPI YAML file into a Redoc document and generate a static HTML file as an artifact.

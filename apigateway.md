@@ -102,6 +102,22 @@
   - Confirm an upload file
 ![Screenshot_20241005_175057_Chrome](https://github.com/user-attachments/assets/c55b9830-5aef-4c2e-9857-b3aad4bff256)
 
+### Image Delete API
+- Create Resource: `images` - `raw` - `{object}`
+- Create Method(`DELETE`): Configured in the same way
+- Edit Integration Request
+  - Add Path Parameter
+    - `object`: `method.request.path.object`
+- Since `*/*` is already configured in `API Settings` under Binary Media Types, no additional configuration is needed.
+- Delete Test
+  - Uses API Key
+![Screenshot_20241005_180236_Chrome](https://github.com/user-attachments/assets/b359c2ff-e845-4df1-82b2-06833a12aed5)
+
+  - Confirm a deleted file
+    - Shows versions for confirming deletion
+![Screenshot_20241005_180316_Chrome](https://github.com/user-attachments/assets/c8b67fa3-75eb-4a14-84fb-21bde3e4da4d)
+
+
 ### To-do
 - Add Delete API included by API Key
 - Add Github Repository

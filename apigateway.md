@@ -40,12 +40,32 @@
   - Action Type: Use path override
   - Path override: `{s3 bucket}/{path}`
   - Execution role: above the IAM role
-- Modify Method Response
+- Edit Method Response
   - Add Header: `Content-Type`
-- Modify Integration Response
-  - `Content-Type`'s mapping value: `integration.response.header.Content-Type`
+- Edit Integration Response
+  - `Content-Type`: `integration.response.header.Content-Type`
 - The Method & Integration Response must be set as described above to display static HTML content instead of a JSON response.
 - Deploy API: Select New Stage and enter a stage name for each version.
+
+### Image Get API
+- Create a S3 Bucket
+- Create Resource: `images` - `{resolution}` - `{object}`
+- Create Method(`Get`)
+  - Configured in the same way
+  - Request body passthrough: When there are no templates defined (recommended)
+- Edit Integration Request
+  - Add Path Parameter
+    - `object`: `method.request.path.object`
+    - `resolution`: `method.request.path.resolution`
+- Edit Method Response
+  - Add Header: `Content-Type`
+- Edit Integration Response
+  - `Content-Type`: `'*/*'`
+- Select `{object}` - Click `Enable CORS`
+  - Check `GET` and Save
+- Go to `API Settings` Menu - Binary Media Types - Manage media types
+  - Add binary media type: `*/*`
+- Deploy API
 
 ## Change S3 permissions
 - Check block all public access

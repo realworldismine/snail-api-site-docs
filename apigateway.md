@@ -11,6 +11,9 @@
 - The API will include POST requests for images, as outlined in the initial OpenAPI document, and will also add PUT and DELETE requests.
 - The same S3 Bucket used for API operations can be used for the Image Bucket, which will be determined during the implementation process.
 
+### References
+- [Delivering images in AWS S3 bucket through AWS API Gateway](https://dev.to/dilanka-rathnasiri/delivering-images-in-aws-s3-bucket-through-aws-api-gateway-49e)
+
 ## IAM Role - API Gateway to S3
 ### Overview
 - To connect an S3 bucket object with API Gateway, an IAM Role must be configured and linked.
@@ -117,11 +120,6 @@
     - Shows versions for confirming deletion
 ![Screenshot_20241005_180316_Chrome](https://github.com/user-attachments/assets/c8b67fa3-75eb-4a14-84fb-21bde3e4da4d)
 
-
-### To-do
-- Add Delete API included by API Key
-- Add Github Repository
-- Add Github Action for uploading an image to S3 using API Gateway
 
 ## Change S3 permissions
 - Check block all public access

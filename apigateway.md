@@ -80,6 +80,11 @@
   - Confirm an upload file
 ![Screenshot_20241005_171430_Chrome](https://github.com/user-attachments/assets/8499e6fe-e825-435b-afa7-af2d520199e6)
 
+### To-do
+- Add API Key for PUT Method
+- Add Delete API included by API Key
+- Add Github Repository
+- Add Github Action for uploading an image to S3 using API Gateway
 
 ## Change S3 permissions
 - Check block all public access

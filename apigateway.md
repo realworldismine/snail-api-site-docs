@@ -77,11 +77,32 @@
 - Put Test
   - Binary Upload
 ![Screenshot_20241005_171152_Chrome](https://github.com/user-attachments/assets/fffb85a5-196f-4b79-8e5d-a0ef5c27580d)
+
   - Confirm an upload file
 ![Screenshot_20241005_171430_Chrome](https://github.com/user-attachments/assets/8499e6fe-e825-435b-afa7-af2d520199e6)
 
+
+### Add API Key
+- The reason for adding an API Key is that, in the case of PUT/DELETE methods, changes to the images may occur. Therefore, it should only be applied to requests that have a specific key.
+- Select `API Keys` - Create API Key - Auto Generate
+- Select `Usage Plans` - Create Usage Plan
+  - Rate(100), Burst(20), Quota Requests(10 per month)
+  - Add associated stages
+  - Add API Key
+- Go to `PUT` Method - Edit Method Request - Check API Key Required
+- Re-deploy and select the specific stage
+- Put Test
+  - API Key's key is must be a `x-api-key`.
+  - no API key or invalid API Key
+![Screenshot_20241005_174938_Chrome](https://github.com/user-attachments/assets/228d9459-0352-45c5-b85e-58616e42da8a)
+
+  - valid API Key
+![Screenshot_20241005_174844_Chrome](https://github.com/user-attachments/assets/23102993-4736-4069-a2b6-09fb5364de2e)
+
+  - Confirm an upload file
+![Screenshot_20241005_175057_Chrome](https://github.com/user-attachments/assets/c55b9830-5aef-4c2e-9857-b3aad4bff256)
+
 ### To-do
-- Add API Key for PUT Method
 - Add Delete API included by API Key
 - Add Github Repository
 - Add Github Action for uploading an image to S3 using API Gateway

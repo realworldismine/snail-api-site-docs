@@ -67,6 +67,20 @@
   - Add binary media type: `*/*`
 - Deploy API
 
+### Image Put API
+- Create Resource: `images` - `raw` - `{object}`
+- Create Method(`PUT`): Configured in the same way
+- Edit Integration Request
+  - Add Path Parameter
+    - `object`: `method.request.path.object`
+- Since `*/*` is already configured in `API Settings` under Binary Media Types, no additional configuration is needed.
+- Put Test
+  - Binary Upload
+![Screenshot_20241005_171152_Chrome](https://github.com/user-attachments/assets/fffb85a5-196f-4b79-8e5d-a0ef5c27580d)
+  - Confirm an upload file
+![Screenshot_20241005_171430_Chrome](https://github.com/user-attachments/assets/8499e6fe-e825-435b-afa7-af2d520199e6)
+
+
 ## Change S3 permissions
 - Check block all public access
 - By configuring it this way, the S3 bucket will not be directly accessible from the outside, and access will only be possible through API Gateway.

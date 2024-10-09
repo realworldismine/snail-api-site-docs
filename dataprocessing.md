@@ -93,6 +93,7 @@ jobs:
 - Github Repository: a specific repository
 - Github Branch: a specific repository (e.g. `main`)
 - Add Permissions: `AmazonAPIGatewayInvokeFullAccess`
+![image](https://github.com/user-attachments/assets/71c3a70c-7c1f-4687-8a52-03d5f1468d79)
 
 ### Github Repository Settings
 - Go `Secrets and variables` - `Actions`
@@ -123,6 +124,9 @@ jobs:
   - For renames, similarity detection is used instead of a simple R, so it may appear as R100, R95, etc. The script should be set to run when the change type starts with R.
   - Since different content types are needed for different image extensions, ensure the correct content type is sent in the header during PUT requests.
   - PUT and DELETE requests use an API Key, so make sure the Action Secret contains the API Key value.
+- The Operation is as follows.
+![image](https://github.com/user-attachments/assets/7770b568-cc3d-48ce-a0c7-15676220e06c)
+![image](https://github.com/user-attachments/assets/b05e9c6a-1bdd-46ff-8682-c2383464f20e)
 
 ### To-do Next
 - In this level, we implemented the basic credentials and data transmission between GitHub Actions and AWS.

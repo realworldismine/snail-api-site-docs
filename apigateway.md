@@ -89,7 +89,7 @@
 - The reason for adding an API Key is that, in the case of PUT/DELETE methods, changes to the images may occur. Therefore, it should only be applied to requests that have a specific key.
 - Select `API Keys` - Create API Key - Auto Generate
 - Select `Usage Plans` - Create Usage Plan
-  - Rate(100), Burst(20), Quota Requests(10 per month)
+  - Rate(1,000), Burst(500), Quota Requests(10,000 per day)
   - Add associated stages
   - Add API Key
 - Go to `PUT` Method - Edit Method Request - Check API Key Required

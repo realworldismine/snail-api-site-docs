@@ -68,5 +68,65 @@ jobs:
   - If still unsuccessful, it will log the failure and error message in DynamoDB.
   - Issues with the original image will already have been validated by the GitHub Action, so no additional checks will be performed at this stage.
 
-## Implementation
-- TBD
+## Implementation - Level 100
+### OIDC(OpenID Connect) 
+#### References
+- [Configuring OpenID Connect in Amazon Web Services](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+- [About security hardening with OpenID Connect](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect)
+- [Create an OpenID Connect (OIDC) identity provider in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html)
+
+#### Overview
+- There are several ways to access AWS resources from GitHub Actions, but one of the most common is using OIDC. (For more details, see the References section above)
+- To configure OIDC, settings are required on both GitHub and AWS.
+
+#### AWS IAM - Identity Provider
+- Since the credentials must be handled externally (i.e., from GitHub), create an Identity Provider for this purpose.
+- Configure Provider: `OpenID Connect`
+- Provider URL: `https://token.actions.githubusercontent.com`
+- Audience: `sts.amazonaws.com`
+- After creating the identify provider, Click assign role.
+
+### AWS IAM - Role
+- Trusted entity type: `Web Identity` (default)
+- Select the audience
+- Github Organization: organization or your account name
+- Github Repository: a specific repository
+- Github Branch: a specific repository (e.g. `main`)
+- Add Permissions: `AmazonAPIGatewayInvokeFullAccess`
+
+### Github Repository Settings
+- Go `Secrets and variables` - `Actions`
+- Secrets
+  - `API_KEY`: your API Gateway's API key
+- Variables
+  - `AWS_IAM_ID`: your IAM ID
+  - `AWS_INVOKE_ROLE`: The IAM Role you recently created
+  - `AWS_RESOURCE_ID`: API Gateway Resource ID
+  - `AWS_RES_API_ID`: API Gateway ID
+
+### Github Action Setting
+- Click `New Workflow` - `set up a workflow yourself`
+- See the workflow: [Click](https://github.com/realworldismine/snail-images/blob/main/.github/workflows/api.yml)
+- Ensure it only runs on push actions to the main branch.
+- `actions/checkout@v4`
+  - You must set `fetch-depth: 2`. Otherwise, issues will arise when comparing the previous commit’s HEAD later on.
+- `aws-actions/configure-aws-credentials@v4`
+  - Enter the ARN and region of the IAM Role you recently created.
+  - It’s recommended to use Action Variables for the ARN instead of entering it directly.
+
+### Github Action Shell Script
+- The basic operation is as follows:
+  - It compares the previous and current commits to check for changes, then processes only image files.
+  - If a file in the commit is added, modified, or copied, it performs a PUT request.
+  - If a file in the commit is deleted, it performs a DELETE request.
+  - If a file in the commit is renamed, it first performs a DELETE request for the old name, then a PUT request for the new name.
+  - For renames, similarity detection is used instead of a simple R, so it may appear as R100, R95, etc. The script should be set to run when the change type starts with R.
+  - Since different content types are needed for different image extensions, ensure the correct content type is sent in the header during PUT requests.
+  - PUT and DELETE requests use an API Key, so make sure the Action Secret contains the API Key value.
+
+### To-do Next
+- In this level, we implemented the basic credentials and data transmission between GitHub Actions and AWS.
+- In the next level, we will implement file name transformation and metadata storage and management using DynamoDB and Lambda functions.
+
+## Implementation - Level 200
+TBD

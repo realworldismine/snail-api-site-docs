@@ -133,4 +133,7 @@ jobs:
 - In the next level, we will implement file name transformation and metadata storage and management using DynamoDB and Lambda functions.
 
 ## Implementation - Level 200
-TBD
+### References
+- [DynamoDB - Lambda Setting](https://velog.io/@nari120/DynamoDB-Lambda-%EC%98%88%EC%A0%9C)
+- [Lambda - PIL error resolution](https://velog.io/@silver_bell/AWS-Lambda-PIL-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0-python)
+- [Python11 Package ARN](https://api.klayers.cloud/api/v2/p3.11/layers/latest/ap-northeast-2/html)

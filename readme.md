@@ -38,7 +38,9 @@
   - PC(Big)
  
 ### Sub Pages
-- [Processes](process.md)
+- [Overall Using Processes](process.md)
 - [Static Web Page Implementation](web.md)
 - [API Gateway Implementation](apigateway.md)
 - [Data Processing Implementation](dataprocessing.md)
+- [Image API Request Implementation](imageapirequest.md)
+- [Information API Request Implementation](infoapirequest.md)

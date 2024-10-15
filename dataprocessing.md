@@ -256,4 +256,4 @@ original_filename = event['headers']['filename']
 
 ## Implementation - Level 250
 ### Objectives
-- Implement the lambda function for delete to dynamodb table and delete the file to the S3 image bucket.
+- Implement the lambda function for deleting the image file metadata to dynamodb table and delete the image file to the S3 image bucket.

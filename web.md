@@ -19,17 +19,17 @@
 ### Simple Example
 
 #### Installation
-```
+```Shell
 npm i -g @redocly/cli@latest
 ```
 
 #### HTML Document Generation
 - Generation Command
-```
+```Shell
 npx @redocly/cli build-docs snail.yaml  
 ```
 - Generation Result
-```
+```Shell
 Found undefined and using theme.openapi options
 Prerendering docs
 
@@ -73,7 +73,7 @@ Prerendering docs
 4. Buildspec
   - Use a buildspec file
   - Please add `buildspec.yml` in the repository below
-```
+```Yaml
 version: 0.2
 
 phases:

@@ -15,7 +15,7 @@
 - Prevents Push for non-image files by adding an event trigger.
 - If no issues are detected, the action executes a command to upload only the modified files to the S3 Bucket.
 - Example code
-```
+```Yaml
 name: Restrict Non-Image Files on Push
 
 on:
@@ -159,7 +159,7 @@ jobs:
 - Name: `ImageInsertProcess`
 - Code
 ```Python
-# Combined a source code and a pseudo Code
+# Combined a source code and a pseudo code
 ...
 
 s3_client = boto3.client('s3')
@@ -231,8 +231,28 @@ def lambda_handler(event, context):
 - `Integration Request`
   - Change integration type to `Lambda function`.
   - Enable `Lambda proxy integration`.
+    - If lambda proxy integration is disabled, the lambda function could not access the the image file.
+    - Refer to [Lambda proxy integrations in API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html)
   - Input Lambda function's ARN
 - Deploy the API.
+
+### Change Github Action Shell Script
+- Add to `-H "filename: $first_file" \` to the all CURL scripts.
+- Example
+```Shell
+curl -X PUT "$API_ENDPOINT/$second_file" \
+  -H "Content-Type: $content_type" \
+  -H "x-api-key: ${{ secrets.API_KEY }}" \
+  -H "filename: $second_file" \
+  --data-binary "@$second_file"
+```
+- In a lambda function, a code of get an original filename is below.
+```Python
+original_filename = event['headers']['filename']
+```
+- However, a HTTP header doesn't contain an attached file's name, so a custom header name of the file's name is needed.
+- The custom header name is `filename`.
+- In github action, it also needs  an additional header when CURL request is executed.
 
 ## Implementation - Level 250
 ### Objectives

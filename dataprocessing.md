@@ -152,10 +152,10 @@ jobs:
 - Create a table
   - Table name: `image-metadata`
   - Partition key: `ImageId`
-  - Sort key: `ImageType`
+  - Sort key: Blank
   - Default Setting
 
-### Create a lambda function
+### Create a lambda insertion function
 - Name: `ImageInsertProcess`
 - Code
 ```Python
@@ -178,6 +178,7 @@ def lambda_handler(event, context):
         # put a raw file to S3 object with the hashed file name
 
         # declare the dynamodb table
+        # make a image id using imagetype/originalfile/hashedfile
         # insert an item with the raw file's metadata
 
         # open an image
@@ -200,7 +201,7 @@ def lambda_handler(event, context):
 #### Policy
 - Add a policy: `AmazonDynamoDBBasicAccess`
   - Service: `DynamoDB`
-  - Action: `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`
+  - Action: `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`, `dynamodb:Query`
 - Add a policy: `AmazonS3BasicAccess`
   - Service: `S3`
   - Action: `s3:PutObject`, `s3:GetObject`, `s3:DeleteObject`
@@ -237,7 +238,7 @@ def lambda_handler(event, context):
 - Deploy the API.
 
 ### Change Github Action Shell Script
-- Add to `-H "filename: $first_file" \` to the all CURL scripts.
+- Add to `-H "filename: $first_file" \` to the CURL scripts of a PUT method.
 - Example
 ```Shell
 curl -X PUT "$API_ENDPOINT/$second_file" \
@@ -257,3 +258,71 @@ original_filename = event['headers']['filename']
 ## Implementation - Level 250
 ### Objectives
 - Implement the lambda function for deleting the image file metadata to dynamodb table and delete the image file to the S3 image bucket.
+
+### Change DynamoDB Keys
+- Add an index
+  - In deletion, a query execution is contained.
+  - For where condition for a query, it uses an index.
+  - Index Key
+    - Partition Key: `RegisteredFile`
+    - Sort Key: `Status`
+
+### Image Processing in Lambda, DynamoDB, Se3 Bucket
+- Suppose you have the following code.
+```Python
+image_data = base64.b64decode(event['body'])
+
+hash_object = hashlib.sha256(image_data)
+hashed_filename = hash_object.hexdigest()[:20] + f'.{file_extension}'
+```
+- This code is a simple algorithm that converts to a random value using a hashing algorithm.
+- Upon closer inspection, it converts the image data into a hash value.
+- The important point here is that the same image will produce the same hashed value.
+- In GitHub Action, if a file name is changed:
+  - In this case, the old file is deleted, and the new file is uploaded.
+  - The actual operation on the S3 bucket is to delete and then recreate a file with the same name.
+  - Since the original filenames are different in DynamoDB, a delete marker is generated for the previous image ID, and a new image ID is inserted.
+- If a new file is added in GitHub Action, but another file with the same image already exists:
+  - Since the images are identical, the hash values will also be identical.
+  - Therefore, in the S3 bucket, the file is uploaded only with a different registration date.
+  - However, in DynamoDB, the image ID is new, so an item is added.
+- The benefits of processing in this way are as follows:
+  - Even if duplicate images exist, only one copy is registered in the S3 bucket.
+  - For example, `raw/abc.jpg/EF00EF.jpg` and `raw/bcd.jpg/EF00EF.jpg` are the same image, but the S3 bucket shows only one instance of EF00FF.jpg.
+  - This improves storage efficiency.
+  - Duplicate images are recorded as duplicates in the DynamoDB metadata, but the actual reference points to a single image, which is not an issue.
+
+### Create a lambda deletion function
+- Name: `ImageDeleteProcess`
+- Code
+```Python
+# Combined a source code and a pseudo code
+...
+
+# Set DynamoDB table and S3 bucket through environment variables
+DYNAMODB_TABLE_NAME = os.getenv('DYNAMODB_TABLE_NAME')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+
+def lambda_handler(event, context):
+    try:
+        # Extract the filename from the request
+        # Query DynamoDB for the metadata of the given file
+        # If no result is found, do not trigger an error; simply conclude as it does not exist.
+
+        # Delete the file from the S3 bucket
+        # Update the status to "deleted" in DynamoDB for all queried results
+        
+        # return 200 succcess code
+
+    except Exception as e:
+        # return 500 error code
+```
+
+### Modify configurations of the lambda function(`ImageDeleteProcess`)
+- General configuration
+  - Change the memory size: 1024MB
+  - Change the ephemeral storage: 512MB
+- Environment variables
+  - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
+  - `S3_BUCKET_NAME`: the image bucket of S3(`snail-images-dev`)
+- If the configuration is comleted, click `Deploy`.

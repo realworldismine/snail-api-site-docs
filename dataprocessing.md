@@ -69,6 +69,10 @@ jobs:
   - Issues with the original image will already have been validated by the GitHub Action, so no additional checks will be performed at this stage.
 
 ## Implementation - Level 100
+### Objectives
+- Connect github repository to API gateway
+- Implement when request PUT and DELETE method, insert and delete the file in the S3 image bucket.
+
 ### OIDC(OpenID Connect) 
 #### References
 - [Configuring OpenID Connect in Amazon Web Services](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
@@ -87,6 +91,7 @@ jobs:
 - After creating the identify provider, Click assign role.
 
 ### AWS IAM - Role
+- Name: `apigateway-role`
 - Trusted entity type: `Web Identity` (default)
 - Select the audience
 - Github Organization: organization or your account name
@@ -133,7 +138,102 @@ jobs:
 - In the next level, we will implement file name transformation and metadata storage and management using DynamoDB and Lambda functions.
 
 ## Implementation - Level 200
+### Objectives
+- Change API Gateway's target from S3 bucket to lambda function.
+- Create a DynamoDB table.
+- Implement the lambda function for insert to dynamodb table and add the file to the S3 image bucket.
+
 ### References
 - [DynamoDB - Lambda Setting](https://velog.io/@nari120/DynamoDB-Lambda-%EC%98%88%EC%A0%9C)
 - [Lambda - PIL error resolution](https://velog.io/@silver_bell/AWS-Lambda-PIL-%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0-python)
 - [Python 3.11 Package ARN](https://api.klayers.cloud/api/v2/p3.11/layers/latest/ap-northeast-2/html)
+
+### DynamoDB
+- Create a table
+  - Table name: `image-metadata`
+  - Partition key: `ImageId`
+  - Sort key: `ImageType`
+  - Default Setting
+
+### Create a lambda function
+- Name: `ImageInsertProcess`
+- Code
+```Python
+# Combined a source code and a pseudo Code
+...
+
+s3_client = boto3.client('s3')
+dynamodb = boto3.resource('dynamodb')
+
+DYNAMODB_TABLE_NAME = os.getenv('DYNAMODB_TABLE_NAME')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+
+def lambda_handler(event, context):
+    try:
+        # image decoding
+        # get an original file name
+        # check an extension whether a file is an image or not
+        # make a hash value
+        # make a hashed file name
+        # put a raw file to S3 object with the hashed file name
+
+        # declare the dynamodb table
+        # insert an item with the raw file's metadata
+
+        # open an image
+        # declare image resolutions
+
+        for image_type, size in resolutions.items():
+            # make a resized image
+            # save a resized image using BytesIO buffer
+            # put a resized file to S3 object with the hashed file name
+            # insert an item with the resized file's metadata
+
+        # return 200 succcess code
+
+    except UnidentifiedImageError:
+        # return 400 invalid image error code
+    except Exception as e:
+        # return 500 error code
+```
+### IAM 
+#### Policy
+- Add a policy: `AmazonDynamoDBBasicAccess`
+  - Service: `DynamoDB`
+  - Action: `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`
+- Add a policy: `AmazonS3BasicAccess`
+  - Service: `S3`
+  - Action: `s3:PutObject`, `s3:GetObject`, `s3:DeleteObject`
+
+#### Role
+- Modify a role: `apigateway-role`
+  - Add a inline policy: `AmazonLambdaInvokeAccess`
+    - Action: `lambda:InvokeFunction`
+
+- Modify a role: `ImageInsertProcess-role-xxxx`
+  - When creates a lambda function, also creates a role about the function.
+  - The role contains `logs:CreateLogStream`, `logs:CreateLogGroup`, `logs:PutLogEvents` automatically.
+  - Add policies: `AmazonDynamoDBBasicAccess`, `AmazonS3BasicAccess`
+
+### Modify configurations of the lambda function(`ImageInsertProcess`)
+- General configuration
+  - Change the memory size: 1024MB
+  - Change the ephemeral storage: 512MB
+- Environment variables
+  - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
+  - `S3_BUCKET_NAME`: the image bucket of S3(`snail-images-dev`)
+- Add a layer
+  - refer to Python 3.11 Package ARN, find `PILLOW`, and then input the ARN, `arn:aws:lambda:ap-northeast-2:770693421928:layer:Klayers-p311-Pillow:5`
+- If the configuration is comleted, click `Deploy`.
+
+### Change API Gateway settings
+- Change `DELETE` and `PUT` method API
+- `Integration Request`
+  - Change integration type to `Lambda function`.
+  - Enable `Lambda proxy integration`.
+  - Input Lambda function's ARN
+- Deploy the API.
+
+## Implementation - Level 250
+### Objectives
+- Implement the lambda function for delete to dynamodb table and delete the file to the S3 image bucket.

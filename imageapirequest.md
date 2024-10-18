@@ -46,7 +46,7 @@ def lambda_handler(event, context):
         # extract user-agent info
         # parse user-agent info and get a device type
 
-        # get an item using the device type and the image id
+        # get an item using the device type and the image id by DynamoDB Table
         # response an URL using the item's stored key
     except Exception as e:
         # return 500 error code

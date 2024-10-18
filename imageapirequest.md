@@ -12,13 +12,13 @@
   - Refer to the redoc document
     - it uses some parameters, such as `StartDate`, `EndDate`, `Page`, `Limit`.
     - it needs how to implement query using this parameters.
-- Implement `/image` POST API
+- Implement `/snail` POST API
   - It is similar to `/image/{raw}/{file}` PUT API.
   - However, the redoc document is needed to change because its request body has only `url` but would be added to `data`.
   - If using this API, it reviews API request body, the execute image processing.
   - It could be used step function for lambda functions.
 - Implement `/random` GET API
-  - It is similar to `/image` GET API.
+  - It is similar to `/snail` GET API.
   - Using a random function, make a list and utilize a page and a limit.
   - Refer to the redoc document
     - it uses some parameters, such as `Page`, `Limit`.

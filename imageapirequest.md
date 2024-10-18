@@ -61,4 +61,6 @@ def lambda_handler(event, context):
 - Edit Integration Request
   - Execution role: apply `apigateway-role`
 - Deploy API
+- Result
+![image](https://github.com/user-attachments/assets/ab329c6b-bbaa-42e3-9745-de9c93894c8d)
 

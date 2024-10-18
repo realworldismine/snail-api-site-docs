@@ -328,4 +328,6 @@ def lambda_handler(event, context):
 - Environment variables
   - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
   - `S3_BUCKET_NAME`: the image bucket of S3(`snail-images-dev`)
+- Modify a role: `ImageDeleteProcess-role-xxxx`
+  - Add policies: `AmazonDynamoDBBasicAccess`, `AmazonS3BasicAccess`
 - If the configuration is comleted, click `Deploy`.

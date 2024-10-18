@@ -51,6 +51,12 @@ def lambda_handler(event, context):
     except Exception as e:
         # return 500 error code
 ```
+- General configuration
+  - Change the memory size: 1024MB
+- Environment variables
+  - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
+- Modify a role: `GetSingleImage-role-xxxx`
+  - Add policies: `AmazonDynamoDBBasicAccess`
 
 #### API Gateway
 - Create Resource: `snail` - `{id}`

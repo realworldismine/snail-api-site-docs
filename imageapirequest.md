@@ -59,10 +59,6 @@ def lambda_handler(event, context):
   - Lambda function: `GetSingleImage`
   - Enable lambda proxy integration
 - Edit Integration Request
-  - Add Path Parameter
-    - `object`: `method.request.path.object`
-    - `resolution`: `method.request.path.resolution`
-- Edit Method Response
   - Execution role: apply `apigateway-role`
 - Deploy API
 

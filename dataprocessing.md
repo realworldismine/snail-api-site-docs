@@ -151,8 +151,8 @@ jobs:
 ### DynamoDB
 - Create a table
   - Table name: `image-metadata`
-  - Partition key: `ImageId`
-  - Sort key: Blank
+  - Partition key: `ImageType`
+  - Sort key: `ImageId`
   - Default Setting
 
 ### Create a lambda insertion function
@@ -175,6 +175,9 @@ def lambda_handler(event, context):
         # check an extension whether a file is an image or not
         # make a hash value
         # make a hashed file name
+
+        # check current original file
+        # if exists uses current id, otherwise then uses new id
         # put a raw file to S3 object with the hashed file name
 
         # declare the dynamodb table
@@ -201,7 +204,7 @@ def lambda_handler(event, context):
 #### Policy
 - Add a policy: `AmazonDynamoDBBasicAccess`
   - Service: `DynamoDB`
-  - Action: `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`, `dynamodb:Query`
+  - Action: `dynamodb:PutItem`, `dynamodb:DeleteItem`, `dynamodb:GetItem`, `dynamodb:UpdateItem`, `dynamodb:Query`, `dynamodb:Scan`
 - Add a policy: `AmazonS3BasicAccess`
   - Service: `S3`
   - Action: `s3:PutObject`, `s3:GetObject`, `s3:DeleteObject`

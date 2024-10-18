@@ -13,7 +13,7 @@
     - it uses some parameters, such as `StartDate`, `EndDate`, `Page`, `Limit`.
     - it needs how to implement query using this parameters.
 - Implement `/snail` POST API
-  - It is similar to `/image/{raw}/{file}` PUT API.
+  - It is similar to `/images/{raw}/{file}` PUT API.
   - However, the redoc document is needed to change because its request body has only `url` but would be added to `data`.
   - If using this API, it reviews API request body, the execute image processing.
   - It could be used step function for lambda functions.

@@ -70,8 +70,9 @@ def lambda_handler(event, context):
   - Execution role: apply `apigateway-role`
 - Deploy API
 - Result
-
+![image](https://github.com/user-attachments/assets/8fbedf9c-56d1-4037-b5a3-256b508d0e44)
 
 - Using the result's url, go to the url
   - The image url is implemented previously, refer to the [page](apigateway.md#image-get-api)
   - Result
+![image](https://github.com/user-attachments/assets/8e965078-c762-4241-90da-30270c200d1b)

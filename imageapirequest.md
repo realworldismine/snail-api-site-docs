@@ -47,6 +47,8 @@ def lambda_handler(event, context):
         # parse user-agent info and get a device type
 
         # get an item using the device type and the image id by DynamoDB Table
+        # get a host using event['headers'].get('Host', '')
+        # get a stage using event.get('requestContext', {}).get('stage', '')
         # response an URL using the item's stored key
     except Exception as e:
         # return 500 error code
@@ -68,5 +70,8 @@ def lambda_handler(event, context):
   - Execution role: apply `apigateway-role`
 - Deploy API
 - Result
-![image](https://github.com/user-attachments/assets/ab329c6b-bbaa-42e3-9745-de9c93894c8d)
 
+
+- Using the result's url, go to the url
+  - The image url is implemented previously, refer to the [page](apigateway.md#image-get-api)
+  - Result

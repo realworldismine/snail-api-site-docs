@@ -59,6 +59,24 @@ def lambda_handler(event, context):
   - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
 - Modify a role: `GetSingleImage-role-xxxx`
   - Add policies: `AmazonDynamoDBBasicAccess`
+- Make test scenarios
+  - The previous Lambda function could not be tested using the "Test" feature because it handled uploaded images directly.
+  - However, the current Lambda function accepts parameters or address values, making it possible to perform testing. Therefore, we want to create an event for testing purposes.
+  - Test Scenarios
+![image](https://github.com/user-attachments/assets/35c41449-3e09-4c12-a202-a2a57156269f)
+  - Sample Code: `SinglImageEventTest`
+```JSON
+{
+  "path": "http://abc.com/v0/snail/1",
+  "headers": {
+    "Host": "http://abc.com",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15A372 Safari/604.1"
+  },
+  "requestContext": {
+    "stage": "v0"
+  }
+}
+```
 
 #### API Gateway
 - Create Resource: `snail` - `{id}`
@@ -117,7 +135,28 @@ def lambda_handler(event, context):
   - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
 - Modify a role: `GetImageList-role-xxxx`
   - Add policies: `AmazonDynamoDBBasicAccess`
-
+- Make test scenarios
+  - Scenario List
+![image](https://github.com/user-attachments/assets/9c622df1-cd79-44cd-af5f-ca9d76ce65fa)
+  - Sample Code: `FullParamTest`
+```JSON
+{
+  "path": "http://abc.com/v0/snail",
+  "headers": {
+    "Host": "http://abc.com",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15A372 Safari/604.1"
+  },
+  "requestContext": {
+    "stage": "v0"
+  },
+  "queryStringParameters": {
+    "startDate": "2024-10-18",
+    "endDate": "2024-10-23",
+    "page": "1",
+    "limit": "10"
+  }
+}
+```
 #### API Gateway
 - Create Resource: `snail`
 - Create Method(`Get`)

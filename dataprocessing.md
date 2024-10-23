@@ -48,14 +48,14 @@ jobs:
 
 ### DynamoDB
 - As it is NoSQL, no predefined schema is required. The following defines the key values
-- `ImageId`: Managed as the primary key in the format `{S3Filename}_{FileType}`.
+- `ImageId`: Managed in the numeric id.
 - `RegisteredFile`: The location and filename as registered in the GitHub repository.
 - `UploadDate`: Date of registration.
 - `StoredKey`: Key where the file is stored in the S3 Bucket.
-- `ImageType`: One of `raw/sg/md/lg`.
+- `ImageType`: One of `raw/desktop/tablet/movile`.
 - `ImageSize`: The size of the image.
 - `Resolution`: The image resolution.
-- `Status`: One of `failed/pending/completed`.
+- `Status`: One of `deleted/failed/pending/completed`.
 - `ErrorMessage`: A field added only in case of an error, recording the error message.
 
 ### Lambda Function

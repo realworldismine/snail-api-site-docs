@@ -49,7 +49,7 @@ def lambda_handler(event, context):
         # get an item using the device type and the image id by DynamoDB Table
         # get a host using event['headers'].get('Host', '')
         # get a stage using event.get('requestContext', {}).get('stage', '')
-        # response an URL using the item's stored key
+        # response an URL using the item's stored key, id, and uploaddate
     except Exception as e:
         # return 500 error code
 ```
@@ -70,9 +70,62 @@ def lambda_handler(event, context):
   - Execution role: apply `apigateway-role`
 - Deploy API
 - Result
-![image](https://github.com/user-attachments/assets/8fbedf9c-56d1-4037-b5a3-256b508d0e44)
+![image](https://github.com/user-attachments/assets/91f39c3b-d23f-400c-b8eb-a2c3535a8186)
 
 - Using the result's url, go to the url
   - The image url is implemented previously, refer to the [page](apigateway.md#image-get-api)
   - Result
 ![image](https://github.com/user-attachments/assets/8e965078-c762-4241-90da-30270c200d1b)
+
+### Get an image list address API
+#### Lambda Function
+- Name: `GetImageList`
+- Code
+```Python
+# Combined a source code and a pseudo code
+...
+
+dynamodb = boto3.resource('dynamodb')
+
+dynamodb_table_name = os.getenv('DYNAMODB_TABLE_NAME')
+
+def lambda_handler(event, context):
+    try:
+        # extract url path
+        # get parameters
+
+        # extract user-agent info
+        # parse user-agent info and get a device type
+
+        # check page and if not page exists set a default value
+        # check limit and if not page exists set a default value
+        # check startdate
+        # check enddate
+
+        # get an item using the device type and the parameters by DynamoDB Table
+        # get a host using event['headers'].get('Host', '')
+        # get a stage using event.get('requestContext', {}).get('stage', '')
+
+        # make a list from the results
+        # response an URL using the item's stored key, id, and uploaddate
+    except Exception as e:
+        # return 500 error code
+```
+- General configuration
+  - Change the memory size: 1024MB
+- Environment variables
+  - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
+- Modify a role: `GetImageList-role-xxxx`
+  - Add policies: `AmazonDynamoDBBasicAccess`
+
+#### API Gateway
+- Create Resource: `snail`
+- Create Method(`Get`)
+  - Integration type: Lambda function
+  - Lambda function: `GetImageList`
+  - Enable lambda proxy integration
+- Edit Integration Request
+  - Execution role: apply `apigateway-role`
+- Deploy API
+- Result
+![image](https://github.com/user-attachments/assets/541695a3-3963-41da-95aa-c87716d09b66)

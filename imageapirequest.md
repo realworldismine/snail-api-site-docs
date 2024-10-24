@@ -168,3 +168,70 @@ def lambda_handler(event, context):
 - Deploy API
 - Result
 ![image](https://github.com/user-attachments/assets/541695a3-3963-41da-95aa-c87716d09b66)
+
+### Get a random image list address API
+#### Lambda Function
+- Name: `GetRandomImageList`
+- Code
+```Python
+# Combined a source code and a pseudo code
+...
+
+dynamodb = boto3.resource('dynamodb')
+
+dynamodb_table_name = os.getenv('DYNAMODB_TABLE_NAME')
+
+def lambda_handler(event, context):
+    try:
+        # extract url path
+        # get parameters
+
+        # extract user-agent info
+        # parse user-agent info and get a device type
+
+        # check count and if not page exists set a default value
+
+        # get an item using the device type and the parameters by DynamoDB Table
+        # get a host using event['headers'].get('Host', '')
+        # get a stage using event.get('requestContext', {}).get('stage', '')
+
+        # make a random list
+        # response an URL using the item's stored key, id, and uploaddate
+    except Exception as e:
+        # return 500 error code
+```
+- General configuration
+  - Change the memory size: 1024MB
+- Environment variables
+  - `DYNAMODB_TABLE_NAME`: the table of DynamoDB(`image-metadata`)
+- Modify a role: `GetRandomImageList-role-xxxx`
+  - Add policies: `AmazonDynamoDBBasicAccess`
+- Make test scenarios
+  - Scenario List
+
+  - Sample Code: `ParamTest`
+```JSON
+{
+  "path": "http://abc.com/v0/random",
+  "headers": {
+    "Host": "http://abc.com",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15A372 Safari/604.1"
+  },
+  "requestContext": {
+    "stage": "v0"
+  },
+  "queryStringParameters": {
+    "count": "1"
+  }
+}
+```
+#### API Gateway
+- Create Resource: `random`
+- Create Method(`Get`)
+  - Integration type: Lambda function
+  - Lambda function: `GetRandomImageList`
+  - Enable lambda proxy integration
+- Edit Integration Request
+  - Execution role: apply `apigateway-role`
+- Deploy API
+- Result

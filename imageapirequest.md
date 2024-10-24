@@ -208,7 +208,7 @@ def lambda_handler(event, context):
   - Add policies: `AmazonDynamoDBBasicAccess`
 - Make test scenarios
   - Scenario List
-
+![image](https://github.com/user-attachments/assets/515c0583-aeea-4da3-bbce-d221221393a7)
   - Sample Code: `ParamTest`
 ```JSON
 {
@@ -235,3 +235,4 @@ def lambda_handler(event, context):
   - Execution role: apply `apigateway-role`
 - Deploy API
 - Result
+![image](https://github.com/user-attachments/assets/0c507d5e-cd36-46fc-83d3-5c1fb6b0461a)

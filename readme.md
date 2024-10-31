@@ -43,4 +43,5 @@
 - [API Gateway Implementation](apigateway.md)
 - [Data Processing Implementation](dataprocessing.md)
 - [Image API Request Implementation](imageapirequest.md)
+- [Asynchronized Processing - SQS Implementation](sqs.md)
 - [Information API Request Implementation](infoapirequest.md)

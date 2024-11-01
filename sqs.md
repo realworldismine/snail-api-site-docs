@@ -51,3 +51,100 @@
 
 #### Lambda Implementation for Deleting Resolution-based Images
 - When metadata is received, deletes the resolution-based image from the S3 bucket and updates the status in DynamoDB
+
+## Implementation
+
+### IAM Policy
+- Define policies for S3, SQS, and Lambda functions.
+- `ImageMetadataDynamoDBBasicPolicy`: Policy for performing Put, Delete, and Get actions on DynamoDB.
+- `PollPutRawImageQueuePolicy`: Policy for the `RawImagePutProcess` Lambda function to retrieve messages from the `PutRawImage` queue.
+- `SendPutResolutionBasedImageQueuePolicy`: Policy for the `RawImagePutProcess` Lambda function to send messages to the `PutResolutionBasedImageQueue`.
+- `PollPutResolutionBasedImageQueuePolicy`: Policy for the `ResolutionBasedImagePutProcess` Lambda function to retrieve messages from the `PutResolutionBasedImageQueue`.
+- `SnailImagesBucketGetPolicy`: Policy to retrieve images from the S3 bucket.
+- `SnailImagesBucketPutPolicy`: Policy to store and delete images in the S3 bucket.
+- `SnailTempImagesGetAndDeletePolicy`: Policy to retrieve and delete images in the temporary S3 bucket.
+
+### Lambda Function
+- Split the functionality of the existing Lambda function used for image put processing into two separate functions: one for processing raw images and another for processing resolution-adjusted images.
+
+#### Processing Raw Images
+- Name: `RawImagePutProcess`
+- Additional Policies: ImageMetadataDynamoDBBasicPolicy, PollPutRawImageQueuePolicy, SendPutResolutionBasedImageQueuePolicy, SnailImagesBucketPutPolicy, SnailTempImagesGetAndDeletePolicy
+- Code
+```Python
+def lambda_handler(event, context):
+    try:
+        # Send metadata added to DynamoDB as a message to the SQS queue for image resolution processing
+        # Delete images stored in the S3 Temporary Bucket
+
+        # check an extension whether a file is an image or not
+        # make a hash value
+        # make a hashed file name
+
+        # check current original file
+        # if exists uses current id, otherwise then uses new id
+        # put a raw file to S3 object with the hashed file name
+
+        # declare the dynamodb table
+        # make a image id using imagetype/originalfile/hashedfile
+        # insert an item with the raw file's metadata
+
+        # Process data received from SQS
+        # Retrieve image information stored in the S3 Temporary Bucket based on the data received from SQS
+
+        # return 200 succcess code
+
+    except UnidentifiedImageError:
+        # return 400 invalid image error code
+    except Exception as e:
+        # return 500 error code
+```
+
+#### Processing Resolution-Adjusted Images
+- Name: `ResolutionBasedImagePutProcess`
+- Additional Policies: ImageMetadataDynamoDBBasicPolicy, PollPutResolutionBasedImageQueuePolicy, SnailImagesBucketGetPolicy, SnailImagesBucketPutPolicy
+- Code:
+```Python
+def lambda_handler(event, context):
+    try:
+        # Process data received from SQS
+        # Retrieve original image information from the S3 bucket based on the data received from SQS
+
+        # open an image
+        # declare image resolutions
+
+        for image_type, size in resolutions.items():
+            # make a resized image
+            # save a resized image using BytesIO buffer
+            # put a resized file to S3 object with the hashed file name
+            # insert an item with the resized file's metadata
+
+        # return 200 succcess code
+
+    except UnidentifiedImageError:
+        # return 400 invalid image error code
+    except Exception as e:
+        # return 500 error code
+```
+
+### SQS
+- Set as Standard Queue
+- PutRawImageQueue: Queue for processing raw images
+- Uses RawImagePutProcess as a Lambda trigger
+- PutResolutionBasedImageQueue: Queue for processing resolution-adjusted images
+- Uses ResolutionBasedImagePutProcess as a Lambda trigger
+
+### S3 Bucket
+- Purpose: Store a temporary image
+- Event Notification
+  - Prefix: `images/`
+  - Event types: Check `All object create events`
+  - Destination: SQS Queue
+  - SQS Queue: `PutRawImageQueue` ARN
+
+### API Gateway
+- Modify `raw/{object}` PUT API
+  - Select Integration Request
+  - AWS Service: S3
+  - Action Type: Use path override
+  - Path override: `snail-temp-images-dev/images/{object}`

@@ -44,4 +44,5 @@
 - [Data Processing Implementation](dataprocessing.md)
 - [Image API Request Implementation](imageapirequest.md)
 - [Asynchronized Processing - SQS Implementation](sqs.md)
+- [S3 Lifecycle Management](s3lifecycle.md)
 - [Information API Request Implementation](infoapirequest.md)
